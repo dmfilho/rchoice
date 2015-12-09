@@ -1,0 +1,52 @@
+#!/usr/bin/python
+
+import os, sys, random
+
+# Version 0.1.0
+
+# Check number of arguments
+if len(sys.argv) < 2:
+    print "rchoice 0.1.0, by Dimas Melo Filho"
+    print " This tool can be used to select an item from a list at random.\n"
+    print "Usage: rchoice item_1 item_2 ... item_n"
+    print " Optionally, each item may contain a score ranging from 1 to MAX_INT"
+    print " for instance: randomchoice 10_opt1 20_opt2 1_opt3, meaning that"
+    print " opt1 is 10 times more likely to be selected than opt3, and opt2 is"
+    print " twice more likely to be selected than opt1"
+    sys.exit(1)
+
+# The choice class
+class Choice:
+    def __init__(self, name):
+        if len(name) <= 0:
+            raise "Empty choice name"
+        namesplit = name.split('_',1)
+        if len(namesplit) == 2:
+            if namesplit[0].isdigit():
+                self.score = int(namesplit[0])
+                self.name = namesplit[1]
+                return
+        self.score = 1
+        self.name = name
+
+# Process choice names from command line arguments
+choice_names = sys.argv[1:]
+choices = []
+totalscore = 0
+for choice_name in choice_names:
+    c = Choice(choice_name)
+    totalscore += c.score
+    choices.append(c)
+
+# Select an option at random
+chance = random.randint(0, totalscore)
+selected_idx = 0
+chance -= choices[selected_idx].score
+while chance > 0:
+    selected_idx += 1
+    chance -= choices[selected_idx].score
+
+# Print the selected option
+print choices[selected_idx].name
+sys.exit(0)
+
