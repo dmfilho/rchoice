@@ -2,7 +2,7 @@
 
 import os, sys, random
 
-# Version 0.1.0
+# Version 0.1.1
 
 # Check number of arguments
 if len(sys.argv) < 2:
@@ -20,14 +20,14 @@ class Choice:
     def __init__(self, name):
         if len(name) <= 0:
             raise "Empty choice name"
-        namesplit = name.split('_',1)
+        self.name = name
+        filename = name.rsplit('/',1)
+        namesplit = filename[-1].split('_',1)
         if len(namesplit) == 2:
             if namesplit[0].isdigit():
                 self.score = int(namesplit[0])
-                self.name = namesplit[1]
                 return
         self.score = 1
-        self.name = name
 
 # Process choice names from command line arguments
 choice_names = sys.argv[1:]
@@ -37,6 +37,8 @@ for choice_name in choice_names:
     c = Choice(choice_name)
     totalscore += c.score
     choices.append(c)
+
+random.shuffle(choices)
 
 # Select an option at random
 chance = random.randint(0, totalscore)
